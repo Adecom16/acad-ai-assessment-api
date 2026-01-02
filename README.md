@@ -1,269 +1,199 @@
-# Mini Assessment Engine
+# Mini Assessment Engine API
 
-A production-ready Django REST API for academic assessments built for **Acad AI Backend Assessment**.
+Django REST API for academic assessments - Acad AI Backend.
+
+## Tech Stack
+
+- Django 5.0 + Django REST Framework
+- PostgreSQL
+- Token Authentication with OTP verification
+- TF-IDF grading (scikit-learn)
+- Swagger/OpenAPI documentation
 
 ## Features
 
-### Core Features
-- Role-Based Access Control: Student, Educator, and Admin roles
-- Secure Authentication: Token-based auth with OTP email verification
-- Multiple Question Types: MCQ, True/False, Short Answer, Essay
-- Automated Grading: TF-IDF similarity with anti-cheating detection
-- Comprehensive Anti-Cheating System
-
-### Advanced Features
-- Email Notifications for all major activities
-- Exam Enrollment System with shareable invite links
-- Plagiarism Detection using TF-IDF text similarity
-- Exam Analytics with difficulty and discrimination indices
-- Leaderboard System with percentile rankings
-- Bulk Import/Export via CSV/JSON file upload
-- Completion Certificates with verification
-- Manual Grade Review and adjustment
-
----
+- Three roles: Student, Educator, Admin
+- Question types: MCQ, True/False, Short Answer, Essay
+- Automated grading with anti-cheating detection
+- Email notifications (Mailtrap/SMTP)
+- Exam enrollment with invite links
+- Plagiarism detection
+- Analytics and leaderboards
+- Bulk import (CSV/JSON)
+- Completion certificates
 
 ## Quick Start
 
 ```bash
-# Clone and setup
-git clone <repository>
-cd mini-assessment-engine
-
-# Create virtual environment
+# Setup
 python -m venv venv
-venv\Scripts\activate          # Windows
-source venv/bin/activate       # Linux/Mac
-
-# Install dependencies
+venv\Scripts\activate
 pip install -r requirements.txt
 
-# Configure environment
-copy .env.example .env         # Windows
-cp .env.example .env           # Linux/Mac
+# Configure
+copy .env.example .env
+# Edit .env with your database and email settings
 
-# Database setup
+# Database
 python manage.py migrate
 python manage.py setup_demo
 
-# Run server
+# Run
 python manage.py runserver
 ```
 
-## API Documentation
+API Docs: http://localhost:8000/api/docs/
 
-- Swagger UI: http://localhost:8000/api/docs/
-- ReDoc: http://localhost:8000/api/redoc/
+## Demo Accounts
 
----
-
-## Authentication
-
-### Demo Accounts
 | Role | Username | Password |
 |------|----------|----------|
 | Student | student | student123 |
 | Educator | educator | educator123 |
 | Admin | admin | admin123 |
 
-### Token Usage
+## Authentication
+
 ```
-Authorization: Token your-auth-token-here
+Authorization: Token your-token-here
 ```
 
----
+## Main Endpoints
+
+### Auth
+- `POST /api/auth/register/` - Register (sends OTP)
+- `POST /api/auth/verify-otp/` - Verify email
+- `POST /api/auth/login/` - Get token
+- `POST /api/auth/logout/` - Logout
+- `POST /api/auth/forgot-password/` - Password reset
+
+### Courses
+- `GET/POST /api/courses/` - List/Create courses
+- `GET/PUT/DELETE /api/courses/{id}/` - Course detail
+
+### Exams
+- `GET/POST /api/exams/` - List/Create exams
+- `POST /api/exams/{id}/publish/` - Publish exam
+- `GET /api/exams/{id}/analytics/` - Exam analytics
+- `GET /api/exams/{id}/export/` - Export results CSV
+
+### Questions
+- `GET/POST /api/questions/` - List/Create questions
+- `POST /api/questions/bulk-import/` - Bulk import (CSV/JSON file)
+- `GET /api/questions/search/` - Search questions
+
+### Submissions
+- `POST /api/submissions/` - Start exam
+- `POST /api/submissions/{id}/submit/` - Submit answers
+- `POST /api/submissions/{id}/report_activity/` - Report cheating activity
+
+### Enrollment
+- `POST /api/enrollments/` - Enroll student
+- `POST /api/enrollments/join/` - Join via invite code
+- `POST /api/exams/{id}/generate_invite/` - Generate invite link
+
+### Grade Review
+- `GET /api/answers/query/` - Query answers by student/exam
+- `PATCH /api/answers/{id}/review/` - Manual grade adjustment
+
+### Certificates
+- `GET /api/certificates/` - List certificates
+- `GET /api/certificates/verify/{code}/` - Verify certificate
+
+### Dashboards
+- `GET /api/dashboard/admin/` - Admin stats
+- `GET /api/dashboard/educator/` - Educator stats
+- `GET /api/leaderboard/` - Student rankings
 
 ## Security Features
 
-### Multi-Layer Protection
+- SQL injection and XSS detection
+- Rate limiting
+- IP consistency monitoring
+- Concurrent session prevention
+- Exam timing enforcement
+- Suspicion scoring for flagged submissions
 
-**Request Security:**
-- SQL injection detection and blocking
-- XSS attack prevention
-- Request validation middleware
-- Rate limiting on all endpoints
+### Anti-Cheating Tracking
+- Tab switches
+- Copy/paste attempts
+- Focus lost events
+- Right-click attempts
+- Keyboard shortcuts (Ctrl+C/V)
+- IP changes during exam
 
-**Exam Session Security:**
-- IP consistency monitoring (detects VPN switching)
-- Concurrent session prevention (one exam at a time)
-- Exam timing enforcement (blocks late submissions)
-- Browser fingerprint tracking
+## Grading
 
-**Anti-Cheating Detection:**
-| Activity | Detection Method |
-|----------|-----------------|
-| Tab switching | JavaScript event tracking |
-| Copy/paste | Clipboard event monitoring |
-| Focus lost | Window blur detection |
-| Right-click | Context menu blocking |
-| Keyboard shortcuts | Ctrl+C, Ctrl+V detection |
-| IP changes | Mid-exam IP monitoring |
-| Fast completion | Time analysis |
-| Gibberish answers | Text validation |
+| Type | Method |
+|------|--------|
+| MCQ/TF | Exact match |
+| Short Answer | TF-IDF + keyword matching |
+| Essay | Multi-factor analysis with rubric |
 
-**Suspicion Score (0-100):**
-- Automatic scoring based on multiple factors
-- Helps educators prioritize flagged submissions
-- Weighted calculation considering all violations
+Anti-cheating: Gibberish detection, minimum length, required keywords.
 
-### Security Headers
-```
-X-Frame-Options: DENY
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Permissions-Policy: geolocation=(), microphone=(), camera=()
-Cache-Control: no-store (for API responses)
-Content-Security-Policy: default-src 'self'
-```
+## Environment Variables
 
----
+```env
+# Django
+DJANGO_SECRET_KEY=your-secret-key
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
 
-## Grading System
+# Database (Option 1: URL)
+DATABASE_URL=postgres://user:pass@host:5432/dbname
 
-### Accurate Mock Grading
+# Database (Option 2: Individual)
+DB_NAME=assessment_db
+DB_USER=postgres
+DB_PASSWORD=your-password
+DB_HOST=localhost
+DB_PORT=5432
 
-| Question Type | Method | Accuracy |
-|--------------|--------|----------|
-| MCQ | Exact match | 100% |
-| True/False | Exact match | 100% |
-| Short Answer | TF-IDF + keywords | High |
-| Essay | Multi-factor analysis | High |
+# Email (Mailtrap recommended for testing)
+EMAIL_HOST=sandbox.smtp.mailtrap.io
+EMAIL_PORT=2525
+EMAIL_HOST_USER=your-username
+EMAIL_HOST_PASSWORD=your-password
 
-### Anti-Cheating in Grading
-- Gibberish detection (keyboard mashing, random text)
-- Minimum length requirements
-- Dictionary word validation
-- Required keyword enforcement
-
-### Rubric Support
-```json
-{
-  "grading_rubric": "Must mention: function, wrapper. Required: extends behavior"
-}
+# Grading
+GRADING_BACKEND=mock
 ```
 
----
+## Deployment (Render)
 
-## Email Notifications
-
-### Student Notifications
-- Registration OTP
-- Exam invitation
-- Enrollment confirmed
-- Exam started
-- Grades ready
-- Grade updated
-- Certificate available
-
-### Educator Notifications
-- New submission
-- Flagged submission alert
-- New enrollment
-
-### Admin Notifications
-- New user registration
-
----
-
-## API Endpoints
-
-### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register/` | Register with OTP |
-| POST | `/api/auth/verify-otp/` | Verify email |
-| POST | `/api/auth/login/` | Get token |
-| POST | `/api/auth/logout/` | Invalidate token |
-
-### Exams
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/exams/` | List exams |
-| POST | `/api/exams/` | Create exam |
-| POST | `/api/exams/{id}/publish/` | Publish |
-| GET | `/api/exams/{id}/analytics/` | Analytics |
-
-### Submissions
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/submissions/` | Start exam |
-| POST | `/api/submissions/{id}/submit/` | Submit answers |
-| POST | `/api/submissions/{id}/report_activity/` | Report cheating activity |
-
-### Grade Review
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/answers/query/` | Query answers |
-| PATCH | `/api/answers/{id}/review/` | Adjust grade |
-
----
-
-## Request Examples
-
-### Create Exam
-```json
-POST /api/exams/
-{
-  "title": "Python Quiz",
-  "course_code": "CS101",
-  "duration_minutes": 60,
-  "passing_score": 70,
-  "max_attempts": 3,
-  "max_tab_switches": 3,
-  "allow_copy_paste": false,
-  "browser_lockdown": true
-}
-```
-
-### Report Suspicious Activity
-```json
-POST /api/submissions/{id}/report_activity/
-{
-  "tab_switches": 2,
-  "focus_lost": 1,
-  "copy_paste_attempts": 0,
-  "right_click_attempts": 1,
-  "keyboard_shortcut_attempts": 0,
-  "flags": ["window_resize_detected"]
-}
-```
-
----
-
-## Role Permissions
-
-| Action | Student | Educator | Admin |
-|--------|:-------:|:--------:|:-----:|
-| Take exams | Yes | Yes | Yes |
-| View own submissions | Yes | Yes | Yes |
-| Create exams | | Yes | Yes |
-| Review grades | | Yes | Yes |
-| View analytics | | Yes | Yes |
-| Admin dashboard | | | Yes |
-
----
+1. Push to GitHub
+2. Connect repo to Render
+3. Render auto-detects `render.yaml`
+4. Set environment variables in Render dashboard
+5. Deploy
 
 ## Project Structure
 
 ```
 ├── config/
-│   └── settings.py
+│   ├── settings.py
+│   └── urls.py
 ├── assessments/
 │   ├── api/
 │   │   ├── views.py
-│   │   └── serializers.py
+│   │   ├── serializers.py
+│   │   └── auth_views.py
 │   ├── grading/
 │   │   └── mock_grader.py
 │   ├── models/
 │   ├── services/
+│   │   ├── analytics.py
 │   │   ├── notification.py
 │   │   ├── plagiarism.py
-│   │   └── analytics.py
-│   └── middleware.py      # Security middleware
-├── manage.py
+│   │   ├── certificate.py
+│   │   └── bulk_import.py
+│   └── middleware.py
+├── render.yaml
+├── build.sh
 └── requirements.txt
 ```
 
 ---
 
-Built for **Acad AI Backend Assessment**
+Acad AI Backend Assessment
