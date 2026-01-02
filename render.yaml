@@ -6,6 +6,7 @@ services:
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
       python manage.py migrate
+      python manage.py loaddata assessments/fixtures/sample_data.json || true
     startCommand: gunicorn config.wsgi:application
     envVars:
       - key: PYTHON_VERSION
