@@ -551,7 +551,7 @@ Returns question IDs with exam and course info.
 List exam submissions.
 
 **Students** see only their own submissions.
-**Staff** see all submissions.
+**Educators/Admins** see all submissions.
 """
     ),
     retrieve=extend_schema(
@@ -581,7 +581,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         ).prefetch_related(
             Prefetch('answers', queryset=Answer.objects.select_related('question').order_by('question__order'))
         )
-        if not self.request.user.is_staff:
+        
+        # Check if user is educator or admin
+        user = self.request.user
+        is_privileged = hasattr(user, 'profile') and user.profile.role in ['educator', 'admin']
+        
+        if not is_privileged:
             queryset = queryset.filter(student=self.request.user)
         return queryset
 
