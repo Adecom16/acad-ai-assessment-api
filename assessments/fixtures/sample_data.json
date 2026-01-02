@@ -1,0 +1,138 @@
+[
+  {
+    "model": "assessments.course",
+    "pk": 1,
+    "fields": {
+      "name": "Introduction to Computer Science",
+      "code": "CS101",
+      "description": "Fundamental concepts of programming and computer science"
+    }
+  },
+  {
+    "model": "assessments.course",
+    "pk": 2,
+    "fields": {
+      "name": "Data Structures and Algorithms",
+      "code": "CS201",
+      "description": "Advanced data structures and algorithm design"
+    }
+  },
+  {
+    "model": "assessments.exam",
+    "pk": 1,
+    "fields": {
+      "title": "Python Basics Quiz",
+      "description": "Test your knowledge of Python fundamentals",
+      "course": 1,
+      "duration_minutes": 30,
+      "passing_score": "60.00",
+      "max_attempts": 3,
+      "status": "published",
+      "shuffle_questions": false,
+      "show_results_immediately": true,
+      "created_by": null,
+      "published_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "assessments.question",
+    "pk": 1,
+    "fields": {
+      "exam": 1,
+      "question_type": "mcq",
+      "text": "What is the output of print(type([]))?",
+      "points": "2.00",
+      "order": 1,
+      "choices": ["<class 'list'>", "<class 'tuple'>", "<class 'dict'>", "<class 'set'>"],
+      "expected_answer": "0",
+      "grading_rubric": ""
+    }
+  },
+  {
+    "model": "assessments.question",
+    "pk": 2,
+    "fields": {
+      "exam": 1,
+      "question_type": "tf",
+      "text": "Python is a statically typed language.",
+      "points": "1.00",
+      "order": 2,
+      "choices": ["True", "False"],
+      "expected_answer": "1",
+      "grading_rubric": ""
+    }
+  },
+  {
+    "model": "assessments.question",
+    "pk": 3,
+    "fields": {
+      "exam": 1,
+      "question_type": "short",
+      "text": "What is a Python decorator and what is it used for?",
+      "points": "3.00",
+      "order": 3,
+      "choices": null,
+      "expected_answer": "A decorator is a function that takes another function and extends its behavior without explicitly modifying it. Decorators are used for logging, authentication, caching, and modifying function behavior.",
+      "grading_rubric": "Must mention: function wrapper, extends behavior, common uses"
+    }
+  },
+  {
+    "model": "assessments.question",
+    "pk": 4,
+    "fields": {
+      "exam": 1,
+      "question_type": "essay",
+      "text": "Explain the difference between lists and tuples in Python. When would you use each?",
+      "points": "5.00",
+      "order": 4,
+      "choices": null,
+      "expected_answer": "Lists are mutable sequences that can be modified after creation, while tuples are immutable and cannot be changed. Lists use square brackets [] and tuples use parentheses (). Use lists when you need to modify the collection, and tuples for fixed data, dictionary keys, or when immutability is desired for safety. Tuples are slightly more memory efficient and faster.",
+      "grading_rubric": "Key points: mutability difference, syntax difference, use cases for each, performance considerations"
+    }
+  },
+  {
+    "model": "assessments.exam",
+    "pk": 2,
+    "fields": {
+      "title": "Algorithm Complexity Assessment",
+      "description": "Evaluate your understanding of Big O notation and algorithm analysis",
+      "course": 2,
+      "duration_minutes": 45,
+      "passing_score": "70.00",
+      "max_attempts": 2,
+      "status": "published",
+      "shuffle_questions": true,
+      "show_results_immediately": true,
+      "created_by": null,
+      "published_at": "2024-01-20T14:00:00Z"
+    }
+  },
+  {
+    "model": "assessments.question",
+    "pk": 5,
+    "fields": {
+      "exam": 2,
+      "question_type": "mcq",
+      "text": "What is the time complexity of binary search?",
+      "points": "2.00",
+      "order": 1,
+      "choices": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      "expected_answer": "1",
+      "grading_rubric": ""
+    }
+  },
+  {
+    "model": "assessments.question",
+    "pk": 6,
+    "fields": {
+      "exam": 2,
+      "question_type": "short",
+      "text": "Explain why quicksort has O(n²) worst-case complexity but is still preferred over merge sort in practice.",
+      "points": "4.00",
+      "order": 2,
+      "choices": null,
+      "expected_answer": "Quicksort's worst case O(n²) occurs with already sorted arrays or poor pivot selection. However, its average case is O(n log n) with better constants than merge sort. Quicksort is in-place (O(log n) space vs O(n) for merge sort), has better cache locality, and the worst case can be avoided with randomized pivot selection or median-of-three.",
+      "grading_rubric": "Must address: worst case scenario, average case performance, space complexity advantage, cache locality"
+    }
+  }
+]

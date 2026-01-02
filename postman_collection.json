@@ -1,0 +1,198 @@
+{
+  "info": {
+    "name": "Mini Assessment Engine API",
+    "description": "API collection for the Acad AI Assessment Engine with role-based access",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:8000/api"},
+    {"key": "token", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newstudent\",\n  \"email\": \"student@example.com\",\n  \"password\": \"securepass123\",\n  \"password_confirm\": \"securepass123\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"role\": \"student\"\n}"
+            },
+            "url": "{{base_url}}/auth/register/"
+          }
+        },
+        {
+          "name": "Register Educator",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"neweducator\",\n  \"email\": \"educator@example.com\",\n  \"password\": \"securepass123\",\n  \"password_confirm\": \"securepass123\",\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Smith\",\n  \"role\": \"educator\",\n  \"institution\": \"Acad AI University\"\n}"
+            },
+            "url": "{{base_url}}/auth/register/"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('token', jsonData.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"student\",\n  \"password\": \"student123\"\n}"
+            },
+            "url": "{{base_url}}/auth/login/"
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/auth/profile/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboards",
+      "item": [
+        {
+          "name": "Admin Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/dashb "value": "Token {{token}}"}
+            ],
+            "url": "{{base_url}}/courses/"
+          }
+        },
+        {
+          "name": "Get Course",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"}
+            ],
+            "url": "{{base_url}}/courses/1/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Exams",
+      "item": [
+        {
+          "name": "List Exams",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"}
+            ],
+            "url": "{{base_url}}/exams/"
+          }
+        },
+        {
+          "name": "Get Exam Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"}
+            ],
+            "url": "{{base_url}}/exams/1/"
+          }
+        },
+        {
+          "name": "Get Exam Questions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"}
+            ],
+            "url": "{{base_url}}/questions/?exam=1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Submissions",
+      "item": [
+        {
+          "name": "Start Exam (Create Submission)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exam\": 1\n}"
+            },
+            "url": "{{base_url}}/submissions/"
+          }
+        },
+        {
+          "name": "Submit Answers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\"question_id\": 1, \"selected_choice\": 0},\n    {\"question_id\": 2, \"selected_choice\": 1},\n    {\"question_id\": 3, \"answer_text\": \"A decorator is a function that wraps another function to extend its behavior without modifying it. Used for logging and authentication.\"},\n    {\"question_id\": 4, \"answer_text\": \"Lists are mutable and use square brackets. Tuples are immutable and use parentheses. Use lists when you need to modify data, tuples for fixed collections.\"}\n  ]\n}"
+            },
+            "url": "{{base_url}}/submissions/1/submit/"
+          }
+        },
+        {
+          "name": "List My Submissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"}
+            ],
+            "url": "{{base_url}}/submissions/"
+          }
+        },
+        {
+          "name": "Get Submission Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"}
+            ],
+            "url": "{{base_url}}/submissions/1/"
+          }
+        },
+        {
+          "name": "Get My Results for Exam",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"}
+            ],
+            "url": "{{base_url}}/submissions/my_results/?exam_id=1"
+          }
+        }
+      ]
+    }
+  ]
+}
