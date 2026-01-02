@@ -52,4 +52,4 @@ dist/
 build/
 *.egg-info/
 
-./doc
+doc/
