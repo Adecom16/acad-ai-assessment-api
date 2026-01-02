@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "Mini Assessment Engine API",
-    "description": "API collection for the Acad AI Assessment Engine with role-based access",
+    "name": "Acad AI Assessment Engine API",
+    "description": "Complete API collection for the Acad AI Assessment Engine with role-based access, OTP authentication, enrollment management, leaderboards, and more.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -37,6 +37,30 @@
           }
         },
         {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"code\": \"123456\"\n}"
+            },
+            "url": "{{base_url}}/auth/verify-otp/"
+          }
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"purpose\": \"email_verify\"\n}"
+            },
+            "url": "{{base_url}}/auth/resend-otp/"
+          }
+        },
+        {
           "name": "Login",
           "event": [
             {
@@ -44,7 +68,9 @@
               "script": {
                 "exec": [
                   "var jsonData = pm.response.json();",
-                  "pm.collectionVariables.set('token', jsonData.token);"
+                  "if (jsonData.token) {",
+                  "  pm.collectionVariables.set('token', jsonData.token);",
+                  "}"
                 ]
               }
             }
@@ -60,11 +86,73 @@
           }
         },
         {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/auth/logout/"
+          }
+        },
+        {
+          "name": "Password Reset Request",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\"\n}"
+            },
+            "url": "{{base_url}}/auth/password-reset/"
+          }
+        },
+        {
+          "name": "Password Reset Confirm",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"code\": \"123456\",\n  \"new_password\": \"newSecurePass123\",\n  \"confirm_password\": \"newSecurePass123\"\n}"
+            },
+            "url": "{{base_url}}/auth/password-reset/confirm/"
+          }
+        },
+        {
           "name": "Get Profile",
           "request": {
             "method": "GET",
             "header": [{"key": "Authorization", "value": "Token {{token}}"}],
             "url": "{{base_url}}/auth/profile/"
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Updated\",\n  \"institution\": \"New University\",\n  \"department\": \"Computer Science\"\n}"
+            },
+            "url": "{{base_url}}/auth/profile/update/"
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"student123\",\n  \"new_password\": \"newPassword123\",\n  \"confirm_password\": \"newPassword123\"\n}"
+            },
+            "url": "{{base_url}}/auth/change-password/"
           }
         }
       ]
@@ -77,8 +165,27 @@
           "request": {
             "method": "GET",
             "header": [{"key": "Authorization", "value": "Token {{token}}"}],
-            "url": "{{base_url}}/dashb "value": "Token {{token}}"}
-            ],
+            "url": "{{base_url}}/dashboard/admin/"
+          }
+        },
+        {
+          "name": "Educator Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/dashboard/educator/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "List Courses",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
             "url": "{{base_url}}/courses/"
           }
         },
@@ -86,9 +193,45 @@
           "name": "Get Course",
           "request": {
             "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/courses/1/"
+          }
+        },
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
             "header": [
-              {"key": "Authorization", "value": "Token {{token}}"}
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Advanced Python\",\n  \"code\": \"CS301\",\n  \"description\": \"Advanced Python programming concepts\"\n}"
+            },
+            "url": "{{base_url}}/courses/"
+          }
+        },
+        {
+          "name": "Update Course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Advanced Python Updated\",\n  \"code\": \"CS301\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": "{{base_url}}/courses/1/"
+          }
+        },
+        {
+          "name": "Delete Course",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
             "url": "{{base_url}}/courses/1/"
           }
         }
@@ -101,9 +244,7 @@
           "name": "List Exams",
           "request": {
             "method": "GET",
-            "header": [
-              {"key": "Authorization", "value": "Token {{token}}"}
-            ],
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
             "url": "{{base_url}}/exams/"
           }
         },
@@ -111,20 +252,240 @@
           "name": "Get Exam Details",
           "request": {
             "method": "GET",
-            "header": [
-              {"key": "Authorization", "value": "Token {{token}}"}
-            ],
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
             "url": "{{base_url}}/exams/1/"
           }
         },
         {
-          "name": "Get Exam Questions",
+          "name": "Create Exam",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Introduction to Programming\",\n  \"description\": \"Test your understanding of basic programming concepts\",\n  \"course_code\": \"CS101\",\n  \"duration_minutes\": 60,\n  \"passing_score\": 70,\n  \"max_attempts\": 3,\n  \"shuffle_questions\": true,\n  \"show_results_immediately\": true,\n  \"browser_lockdown\": false,\n  \"allow_copy_paste\": false,\n  \"webcam_required\": false,\n  \"max_tab_switches\": 3,\n  \"require_enrollment\": true,\n  \"auto_enroll_course_students\": false,\n  \"available_from\": \"2026-01-15T09:00:00Z\",\n  \"available_until\": \"2026-01-15T18:00:00Z\"\n}"
+            },
+            "url": "{{base_url}}/exams/"
+          }
+        },
+        {
+          "name": "Update Exam",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Exam Title\",\n  \"description\": \"Updated description\",\n  \"duration_minutes\": 90\n}"
+            },
+            "url": "{{base_url}}/exams/1/"
+          }
+        },
+        {
+          "name": "Delete Exam",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/exams/1/"
+          }
+        },
+        {
+          "name": "Publish Exam",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/exams/1/publish/"
+          }
+        },
+        {
+          "name": "Get Exam Analytics",
           "request": {
             "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/exams/1/analytics/"
+          }
+        },
+        {
+          "name": "Plagiarism Check",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/exams/1/plagiarism-check/?threshold=0.85",
+              "host": ["{{base_url}}"],
+              "path": ["exams", "1", "plagiarism-check", ""],
+              "query": [{"key": "threshold", "value": "0.85"}]
+            }
+          }
+        },
+        {
+          "name": "Export Results (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/exams/1/export/"
+          }
+        },
+        {
+          "name": "Export Detailed Results",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/exams/1/export-detailed/"
+          }
+        },
+        {
+          "name": "Export Analytics",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/exams/1/export-analytics/"
+          }
+        },
+        {
+          "name": "Export Plagiarism Report",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/exams/1/export-plagiarism/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Questions",
+      "item": [
+        {
+          "name": "List Questions",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/questions/"
+          }
+        },
+        {
+          "name": "List Questions by Exam",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/questions/?exam=1",
+              "host": ["{{base_url}}"],
+              "path": ["questions", ""],
+              "query": [{"key": "exam", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Get Question",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/questions/1/"
+          }
+        },
+        {
+          "name": "Create MCQ Question",
+          "request": {
+            "method": "POST",
             "header": [
-              {"key": "Authorization", "value": "Token {{token}}"}
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
-            "url": "{{base_url}}/questions/?exam=1"
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exam\": 1,\n  \"question_type\": \"mcq\",\n  \"text\": \"What is 2 + 2?\",\n  \"points\": 2,\n  \"order\": 1,\n  \"choices\": [\"3\", \"4\", \"5\", \"6\"],\n  \"expected_answer\": \"1\"\n}"
+            },
+            "url": "{{base_url}}/questions/"
+          }
+        },
+        {
+          "name": "Create Short Answer Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exam\": 1,\n  \"question_type\": \"short\",\n  \"text\": \"What is a Python decorator?\",\n  \"points\": 5,\n  \"order\": 2,\n  \"expected_answer\": \"A decorator is a function that wraps another function to extend its behavior.\",\n  \"grading_rubric\": \"Must mention: function wrapper, extends behavior\"\n}"
+            },
+            "url": "{{base_url}}/questions/"
+          }
+        },
+        {
+          "name": "Create Essay Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exam\": 1,\n  \"question_type\": \"essay\",\n  \"text\": \"Explain the differences between lists and tuples in Python.\",\n  \"points\": 10,\n  \"order\": 3,\n  \"expected_answer\": \"Lists are mutable, tuples are immutable. Lists use square brackets, tuples use parentheses.\",\n  \"grading_rubric\": \"Mutability (3pts), Syntax (2pts), Use cases (3pts), Examples (2pts)\"\n}"
+            },
+            "url": "{{base_url}}/questions/"
+          }
+        },
+        {
+          "name": "Create True/False Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exam\": 1,\n  \"question_type\": \"tf\",\n  \"text\": \"Python is a compiled language.\",\n  \"points\": 1,\n  \"order\": 4,\n  \"choices\": [\"True\", \"False\"],\n  \"expected_answer\": \"1\"\n}"
+            },
+            "url": "{{base_url}}/questions/"
+          }
+        },
+        {
+          "name": "Update Question",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exam\": 1,\n  \"question_type\": \"mcq\",\n  \"text\": \"Updated question text?\",\n  \"points\": 3,\n  \"order\": 1,\n  \"choices\": [\"A\", \"B\", \"C\", \"D\"],\n  \"expected_answer\": \"0\"\n}"
+            },
+            "url": "{{base_url}}/questions/1/"
+          }
+        },
+        {
+          "name": "Delete Question",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/questions/1/"
+          }
+        },
+        {
+          "name": "Search Questions",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/questions/search/?exam_title=Python&question_type=mcq",
+              "host": ["{{base_url}}"],
+              "path": ["questions", "search", ""],
+              "query": [
+                {"key": "exam_title", "value": "Python"},
+                {"key": "question_type", "value": "mcq"}
+              ]
+            }
           }
         }
       ]
@@ -132,6 +493,22 @@
     {
       "name": "Submissions",
       "item": [
+        {
+          "name": "List My Submissions",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/submissions/"
+          }
+        },
+        {
+          "name": "Get Submission Details",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/submissions/1/"
+          }
+        },
         {
           "name": "Start Exam (Create Submission)",
           "request": {
@@ -157,39 +534,351 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"answers\": [\n    {\"question_id\": 1, \"selected_choice\": 0},\n    {\"question_id\": 2, \"selected_choice\": 1},\n    {\"question_id\": 3, \"answer_text\": \"A decorator is a function that wraps another function to extend its behavior without modifying it. Used for logging and authentication.\"},\n    {\"question_id\": 4, \"answer_text\": \"Lists are mutable and use square brackets. Tuples are immutable and use parentheses. Use lists when you need to modify data, tuples for fixed collections.\"}\n  ]\n}"
+              "raw": "{\n  \"answers\": [\n    {\"question_id\": 1, \"selected_choice\": 1},\n    {\"question_id\": 2, \"selected_choice\": 0},\n    {\"question_id\": 3, \"answer_text\": \"A decorator is a function that wraps another function to extend its behavior without modifying it. Used for logging and authentication.\"},\n    {\"question_id\": 4, \"answer_text\": \"Lists are mutable and use square brackets. Tuples are immutable and use parentheses. Use lists when you need to modify data, tuples for fixed collections.\"}\n  ]\n}"
             },
             "url": "{{base_url}}/submissions/1/submit/"
           }
         },
         {
-          "name": "List My Submissions",
+          "name": "Report Suspicious Activity",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [
-              {"key": "Authorization", "value": "Token {{token}}"}
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
-            "url": "{{base_url}}/submissions/"
-          }
-        },
-        {
-          "name": "Get Submission Details",
-          "request": {
-            "method": "GET",
-            "header": [
-              {"key": "Authorization", "value": "Token {{token}}"}
-            ],
-            "url": "{{base_url}}/submissions/1/"
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tab_switches\": 1,\n  \"focus_lost\": 0,\n  \"copy_paste_attempts\": 0,\n  \"right_click_attempts\": 0,\n  \"keyboard_shortcut_attempts\": 0,\n  \"flags\": [\"tab_switch_detected\"]\n}"
+            },
+            "url": "{{base_url}}/submissions/1/report_activity/"
           }
         },
         {
           "name": "Get My Results for Exam",
           "request": {
             "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/submissions/my_results/?exam_id=1",
+              "host": ["{{base_url}}"],
+              "path": ["submissions", "my_results", ""],
+              "query": [{"key": "exam_id", "value": "1"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enrollment",
+      "item": [
+        {
+          "name": "List Exam Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/exams/1/enrollments/"
+          }
+        },
+        {
+          "name": "Enroll Students",
+          "request": {
+            "method": "POST",
             "header": [
-              {"key": "Authorization", "value": "Token {{token}}"}
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
-            "url": "{{base_url}}/submissions/my_results/?exam_id=1"
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_ids\": [1, 2, 3],\n  \"student_emails\": [\"student@example.com\"],\n  \"send_invitation\": true\n}"
+            },
+            "url": "{{base_url}}/exams/1/enrollments/"
+          }
+        },
+        {
+          "name": "Update Enrollment Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"enrolled\"\n}"
+            },
+            "url": "{{base_url}}/enrollments/1/"
+          }
+        },
+        {
+          "name": "Revoke Enrollment",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/enrollments/1/"
+          }
+        },
+        {
+          "name": "List Invite Links",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/exams/1/invite-links/"
+          }
+        },
+        {
+          "name": "Create Invite Link",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expires_at\": \"2026-02-01T23:59:59Z\",\n  \"max_uses\": 50,\n  \"requires_approval\": false\n}"
+            },
+            "url": "{{base_url}}/exams/1/invite-links/"
+          }
+        },
+        {
+          "name": "Deactivate Invite Link",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/invite-links/1/"
+          }
+        },
+        {
+          "name": "Join Exam with Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"ABC123XY\"\n}"
+            },
+            "url": "{{base_url}}/join/"
+          }
+        },
+        {
+          "name": "My Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/my-enrollments/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leaderboard",
+      "item": [
+        {
+          "name": "Exam Leaderboard",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/leaderboard/exam/1/?limit=50",
+              "host": ["{{base_url}}"],
+              "path": ["leaderboard", "exam", "1", ""],
+              "query": [{"key": "limit", "value": "50"}]
+            }
+          }
+        },
+        {
+          "name": "My Ranking in Exam",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/leaderboard/exam/1/my-rank/"
+          }
+        },
+        {
+          "name": "Course Leaderboard",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/leaderboard/course/1/?limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["leaderboard", "course", "1", ""],
+              "query": [{"key": "limit", "value": "20"}]
+            }
+          }
+        },
+        {
+          "name": "Trending Performers",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/leaderboard/trending/?days=7",
+              "host": ["{{base_url}}"],
+              "path": ["leaderboard", "trending", ""],
+              "query": [{"key": "days", "value": "7"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Progress",
+      "item": [
+        {
+          "name": "My Progress",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/my-progress/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Certificates",
+      "item": [
+        {
+          "name": "Get Certificate (JSON)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": "{{base_url}}/certificates/1/"
+          }
+        },
+        {
+          "name": "Get Certificate (HTML)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/certificates/1/?format=html",
+              "host": ["{{base_url}}"],
+              "path": ["certificates", "1", ""],
+              "query": [{"key": "format", "value": "html"}]
+            }
+          }
+        },
+        {
+          "name": "Verify Certificate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/certificates/verify/CERT-ABC123/?submission_id=1",
+              "host": ["{{base_url}}"],
+              "path": ["certificates", "verify", "CERT-ABC123", ""],
+              "query": [{"key": "submission_id", "value": "1"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bulk Import",
+      "item": [
+        {
+          "name": "Get Import Template (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/import-template/?format=csv",
+              "host": ["{{base_url}}"],
+              "path": ["import-template", ""],
+              "query": [{"key": "format", "value": "csv"}]
+            }
+          }
+        },
+        {
+          "name": "Get Import Template (JSON)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/import-template/?format=json",
+              "host": ["{{base_url}}"],
+              "path": ["import-template", ""],
+              "query": [{"key": "format", "value": "json"}]
+            }
+          }
+        },
+        {
+          "name": "Import Questions",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "file", "type": "file", "src": ""},
+                {"key": "format", "value": "csv", "type": "text"}
+              ]
+            },
+            "url": "{{base_url}}/exams/1/import-questions/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Grade Review",
+      "item": [
+        {
+          "name": "Query Answers for Review",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/answers/query/?exam_id=1",
+              "host": ["{{base_url}}"],
+              "path": ["answers", "query", ""],
+              "query": [{"key": "exam_id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Query Answers by Student",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/answers/query/?username=student",
+              "host": ["{{base_url}}"],
+              "path": ["answers", "query", ""],
+              "query": [{"key": "username", "value": "student"}]
+            }
+          }
+        },
+        {
+          "name": "Query Answers by Submission",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Token {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/answers/query/?submission_id=1",
+              "host": ["{{base_url}}"],
+              "path": ["answers", "query", ""],
+              "query": [{"key": "submission_id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Adjust Answer Grade",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Token {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points_earned\": 4.5,\n  \"feedback\": \"Good answer but missing some key points about immutability.\"\n}"
+            },
+            "url": "{{base_url}}/answers/1/review/"
           }
         }
       ]
