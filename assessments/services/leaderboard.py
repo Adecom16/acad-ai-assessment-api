@@ -1,7 +1,4 @@
-"""
-Leaderboard Service for exam rankings and student performance tracking.
-Demonstrates advanced query optimization with annotations and aggregations.
-"""
+"""Leaderboard service for exam rankings."""
 from django.db.models import Avg, Count, Max, Min, F, Window, Sum
 from django.db.models.functions import Rank, DenseRank, PercentRank
 from django.contrib.auth.models import User
@@ -12,10 +9,7 @@ from assessments.models import Submission, Exam
 
 
 class LeaderboardService:
-    """
-    Service for generating leaderboards and performance rankings.
-    Uses optimized queries with window functions for efficient ranking.
-    """
+    """Service for generating leaderboards and performance rankings."""
     
     @classmethod
     def get_exam_leaderboard(cls, exam_id: int, limit: int = 50) -> dict:

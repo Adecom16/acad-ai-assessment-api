@@ -1,6 +1,4 @@
-"""
-Bulk Import Service for questions via CSV/JSON.
-"""
+"""Bulk import service for questions via CSV/JSON."""
 import csv
 import json
 import io

@@ -1,6 +1,4 @@
-"""
-Export Service for generating CSV reports.
-"""
+"""Export service for CSV reports."""
 import csv
 import io
 from datetime import datetime

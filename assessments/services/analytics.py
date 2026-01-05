@@ -1,7 +1,4 @@
-"""
-Exam Analytics Service.
-Provides detailed statistics and insights for exams and questions.
-"""
+"""Exam analytics service."""
 from django.db.models import Avg, Count, StdDev, F, Q, Case, When, FloatField
 from collections import defaultdict
 import numpy as np

@@ -1,7 +1,4 @@
-"""
-Mock Grading Service - Algorithmic grading using TF-IDF and keyword matching.
-Designed for accurate, fair grading without external API dependencies.
-"""
+"""Mock grading service using TF-IDF and keyword matching."""
 import re
 import string
 from typing import Optional, List, Set, Tuple
@@ -11,14 +8,7 @@ from .base import GradingService, GradingResult
 
 
 class MockGradingService(GradingService):
-    """
-    Production-ready algorithmic grading using:
-    - TF-IDF cosine similarity for semantic matching
-    - Keyword extraction and matching
-    - N-gram analysis for phrase detection
-    - Length and structure analysis
-    - Anti-cheating measures (gibberish detection, copy detection)
-    """
+    """Algorithmic grading using TF-IDF similarity and keyword matching."""
 
     def __init__(self):
         self.vectorizer = TfidfVectorizer(
@@ -27,7 +17,7 @@ class MockGradingService(GradingService):
             ngram_range=(1, 3),  # Unigrams, bigrams, trigrams
             max_features=2000,
             min_df=1,
-            sublinear_tf=True  # Apply sublinear tf scaling
+            sublinear_tf=True  # sublinear tf scaling
         )
         
         # Common stopwords to exclude from keyword matching
@@ -73,10 +63,6 @@ class MockGradingService(GradingService):
             grading_method=self.get_service_name()
         )
 
-    # =========================================================================
-    # MCQ / TRUE-FALSE GRADING
-    # =========================================================================
-
     def _grade_choice(
         self,
         selected: Optional[int],
@@ -119,10 +105,6 @@ class MockGradingService(GradingService):
                 confidence=1.0,
                 grading_method=self.get_service_name()
             )
-
-    # =========================================================================
-    # SHORT ANSWER GRADING
-    # =========================================================================
 
     def _grade_short_answer(
         self,
@@ -222,10 +204,6 @@ class MockGradingService(GradingService):
             confidence=confidence,
             grading_method=self.get_service_name()
         )
-
-    # =========================================================================
-    # ESSAY GRADING
-    # =========================================================================
 
     def _grade_essay(
         self,
@@ -336,10 +314,6 @@ class MockGradingService(GradingService):
             grading_method=self.get_service_name()
         )
 
-    # =========================================================================
-    # TEXT PROCESSING UTILITIES
-    # =========================================================================
-
     def _normalize_text(self, text: str) -> str:
         """Normalize text for comparison."""
         if not text:
@@ -423,10 +397,6 @@ class MockGradingService(GradingService):
                 concepts.append(trigram)
         
         return concepts[:20]  # Limit to top 20 concepts
-
-    # =========================================================================
-    # SCORING FUNCTIONS
-    # =========================================================================
 
     def _calculate_similarity(self, text1: str, text2: str) -> float:
         """Calculate TF-IDF cosine similarity between two texts."""
@@ -536,10 +506,6 @@ class MockGradingService(GradingService):
         
         return min(1.0, score)
 
-    # =========================================================================
-    # ANTI-CHEATING
-    # =========================================================================
-
     def _is_gibberish(self, text: str) -> bool:
         """Detect if text is gibberish or random characters."""
         if not text or len(text) < 10:
@@ -587,10 +553,6 @@ class MockGradingService(GradingService):
             return True
         
         return False
-
-    # =========================================================================
-    # FEEDBACK GENERATION
-    # =========================================================================
 
     def _calculate_confidence(self, score: float) -> float:
         """Calculate grading confidence based on score clarity."""

@@ -1,7 +1,4 @@
-"""
-Security Middleware for Assessment Platform.
-Implements multiple layers of protection against hacking and cheating.
-"""
+"""Security middleware for the assessment platform."""
 import logging
 import hashlib
 import time
@@ -57,13 +54,7 @@ class SecurityHeadersMiddleware:
 
 
 class ExamSessionSecurityMiddleware:
-    """
-    Enhanced security for exam sessions:
-    - IP consistency checking
-    - Device fingerprint validation
-    - Concurrent session detection
-    - Suspicious activity monitoring
-    """
+    """Security checks for exam sessions."""
     
     def __init__(self, get_response):
         self.get_response = get_response
@@ -148,10 +139,7 @@ class ExamSessionSecurityMiddleware:
 
 
 class IPConsistencyMiddleware:
-    """
-    Detect IP address changes during active exam sessions.
-    Flags submissions if IP changes mid-exam (potential cheating indicator).
-    """
+    """Detect IP address changes during active exam sessions."""
     
     def __init__(self, get_response):
         self.get_response = get_response
@@ -227,12 +215,7 @@ class ConcurrentSessionMiddleware:
 
 
 class RequestValidationMiddleware:
-    """
-    Validate incoming requests for potential attacks:
-    - SQL injection patterns
-    - XSS attempts
-    - Oversized payloads
-    """
+    """Validate incoming requests for potential attacks."""
     
     def __init__(self, get_response):
         self.get_response = get_response
@@ -285,11 +268,7 @@ class RequestValidationMiddleware:
 
 
 class ExamTimingMiddleware:
-    """
-    Enforce exam timing rules:
-    - Prevent submissions after time expires
-    - Detect time manipulation attempts
-    """
+    """Enforce exam timing rules."""
     
     def __init__(self, get_response):
         self.get_response = get_response

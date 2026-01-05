@@ -1,7 +1,4 @@
-"""
-Plagiarism Detection Service using TF-IDF and cosine similarity.
-Compares student answers against each other to detect potential copying.
-"""
+"""Plagiarism detection using TF-IDF similarity."""
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np

@@ -1,7 +1,4 @@
-"""
-API Views for Mini Assessment Engine.
-Provides endpoints for courses, exams, questions, submissions, and more.
-"""
+"""API views for the assessment engine."""
 from django.db.models import Sum, Count, Prefetch, Avg
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -31,9 +28,7 @@ from .serializers import (
 )
 
 
-# =============================================================================
-# COURSES
-# =============================================================================
+# Courses
 
 @extend_schema_view(
     list=extend_schema(
@@ -94,9 +89,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     ordering = ['code']
 
 
-# =============================================================================
-# EXAMS
-# =============================================================================
+# Exams
 
 @extend_schema_view(
     list=extend_schema(
@@ -375,9 +368,7 @@ Check submissions for potential plagiarism using TF-IDF text similarity.
         return response
 
 
-# =============================================================================
-# QUESTIONS
-# =============================================================================
+# Questions
 
 @extend_schema_view(
     list=extend_schema(
@@ -540,9 +531,7 @@ Returns question IDs with exam and course info.
         })
 
 
-# =============================================================================
-# SUBMISSIONS
-# =============================================================================
+# Submissions
 
 @extend_schema_view(
     list=extend_schema(
@@ -856,9 +845,7 @@ Called by frontend to report:
             NotificationService.send_certificate_notification(submission)
 
 
-# =============================================================================
-# DASHBOARDS
-# =============================================================================
+# Dashboards
 
 @extend_schema(tags=['Dashboards'])
 class AdminDashboardView(APIView):
@@ -970,9 +957,7 @@ class EducatorDashboardView(APIView):
         })
 
 
-# =============================================================================
-# CERTIFICATES
-# =============================================================================
+# Certificates
 
 @extend_schema(tags=['Certificates'])
 class CertificateView(APIView):
@@ -1025,9 +1010,7 @@ class CertificateVerifyView(APIView):
         return Response({'valid': is_valid, 'certificate_id': cert_id})
 
 
-# =============================================================================
-# BULK IMPORT
-# =============================================================================
+# Bulk Import
 
 @extend_schema(tags=['Bulk Import'])
 class BulkImportQuestionsView(APIView):
@@ -1115,9 +1098,7 @@ class BulkImportTemplateView(APIView):
         return response
 
 
-# =============================================================================
-# GRADE REVIEW
-# =============================================================================
+# Grade Review
 
 @extend_schema(tags=['Grade Review'])
 class AnswerReviewView(APIView):
@@ -1293,14 +1274,12 @@ Find answers to review by filtering on student, exam, or course.
         })
 
 
-# =============================================================================
-# ENROLLMENT
-# =============================================================================
+# Enrollment
 
 from assessments.models import ExamEnrollment, ExamInviteLink
 from .serializers import (
     ExamEnrollmentSerializer, EnrollStudentSerializer, 
-    ExamInviteLinkSerializer, JoinExamSerializer
+    ExamInviteLinkSerializer, JoinExamSerializer, EnrollmentStatusSerializer
 )
 
 
@@ -1383,11 +1362,8 @@ class ExamEnrollmentDetailView(APIView):
 
     @extend_schema(
         summary="Update enrollment status",
-        request={'type': 'object', 'properties': {'status': {'type': 'string', 'enum': ['enrolled', 'pending', 'revoked']}}},
-        responses={200: ExamEnrollmentSerializer, 404: dict},
-        examples=[
-            OpenApiExample('Request Example', value={'status': 'enrolled'}, request_only=True)
-        ]
+        request=EnrollmentStatusSerializer,
+        responses={200: ExamEnrollmentSerializer, 404: dict}
     )
     def patch(self, request, enrollment_id):
         try:
@@ -1532,9 +1508,7 @@ class MyEnrollmentsView(APIView):
         return Response(data)
 
 
-# =============================================================================
-# LEADERBOARD
-# =============================================================================
+# Leaderboard
 
 from assessments.services import LeaderboardService
 
@@ -1662,9 +1636,7 @@ class TrendingPerformersView(APIView):
         return Response(data)
 
 
-# =============================================================================
-# STUDENT PROGRESS
-# =============================================================================
+# Student Progress
 
 @extend_schema(tags=['Analytics'])
 class StudentProgressView(APIView):

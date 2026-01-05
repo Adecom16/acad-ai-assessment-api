@@ -1,7 +1,4 @@
-"""
-Django settings for Mini Assessment Engine.
-Production-ready configuration with security best practices.
-"""
+"""Django settings for the assessment engine."""
 import os
 from pathlib import Path
 from dotenv import load_dotenv

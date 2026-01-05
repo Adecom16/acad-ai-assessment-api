@@ -1,7 +1,4 @@
-"""
-Management command to set up demo data for the Mini Assessment Engine.
-Creates demo users, courses, exams, and questions.
-"""
+"""Management command to set up demo data."""
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
@@ -12,7 +9,7 @@ class Command(BaseCommand):
     help = 'Set up demo data for testing'
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.NOTICE('\n🎓 Setting up Mini Assessment Engine Demo Data...\n'))
+        self.stdout.write(self.style.NOTICE('\n Setting up Mini Assessment Engine Demo Data...\n'))
         
         # Create student
         student, created = User.objects.get_or_create(
@@ -29,7 +26,7 @@ class Command(BaseCommand):
             student.save()
             student.profile.role = UserProfile.Role.STUDENT
             student.profile.save()
-            self.stdout.write(self.style.SUCCESS('✓ Created student: student / student123'))
+            self.stdout.write(self.style.SUCCESS('Created student: student / student123'))
         else:
             self.stdout.write('  Student user already exists')
         
@@ -52,7 +49,7 @@ class Command(BaseCommand):
             educator.profile.role = UserProfile.Role.EDUCATOR
             educator.profile.institution = 'Acad AI University'
             educator.profile.save()
-            self.stdout.write(self.style.SUCCESS('✓ Created educator: educator / educator123'))
+            self.stdout.write(self.style.SUCCESS('Created educator: educator / educator123'))
         else:
             self.stdout.write('  Educator user already exists')
         
@@ -150,10 +147,10 @@ class Command(BaseCommand):
 
         # Print summary
         self.stdout.write(self.style.SUCCESS('\n' + '='*60))
-        self.stdout.write(self.style.SUCCESS('🎉 Demo Setup Complete!'))
+        self.stdout.write(self.style.SUCCESS(' Demo Setup Complete!'))
         self.stdout.write(self.style.SUCCESS('='*60))
         
-        self.stdout.write('\n📋 Demo Accounts:')
+        self.stdout.write('\n Demo Accounts:')
         self.stdout.write('  ┌─────────────┬─────────────┬──────────────┐')
         self.stdout.write('  │ Role        │ Username    │ Password     │')
         self.stdout.write('  ├─────────────┼─────────────┼──────────────┤')
@@ -162,15 +159,15 @@ class Command(BaseCommand):
         self.stdout.write('  │ Admin       │ admin       │ admin123     │')
         self.stdout.write('  └─────────────┴─────────────┴──────────────┘')
         
-        self.stdout.write('\n🔑 API Tokens:')
+        self.stdout.write('\n API Tokens:')
         self.stdout.write(f'  Student:  {student_token.key}')
         self.stdout.write(f'  Educator: {educator_token.key}')
         self.stdout.write(f'  Admin:    {admin_token.key}')
         
-        self.stdout.write('\n📚 API Documentation:')
+        self.stdout.write('\n API Documentation:')
         self.stdout.write('  Swagger UI: http://localhost:8000/api/docs/')
         self.stdout.write('  ReDoc:      http://localhost:8000/api/redoc/')
         
-        self.stdout.write('\n🧪 Test API:')
+        self.stdout.write('\n Test API:')
         self.stdout.write(f'  curl -H "Authorization: Token {student_token.key}" http://localhost:8000/api/exams/')
         self.stdout.write('')

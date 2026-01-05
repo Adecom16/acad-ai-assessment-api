@@ -1,7 +1,4 @@
-"""
-Test cases for Mini Assessment Engine.
-Covers grading, authentication, and submission security.
-"""
+"""Test cases for the assessment engine."""
 from django.test import TestCase
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase

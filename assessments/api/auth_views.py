@@ -1,7 +1,4 @@
-"""
-Authentication Views with OTP Verification.
-Provides secure registration, login, and password reset with email OTP.
-"""
+"""Authentication views with OTP verification."""
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.utils import timezone

@@ -1,4 +1,4 @@
-"""Exam Enrollment model for controlling student access to exams."""
+"""Exam enrollment model."""
 import secrets
 from django.db import models
 from django.contrib.auth.models import User

@@ -1,6 +1,4 @@
-"""
-Notification Service for email notifications using Google SMTP.
-"""
+"""Notification service for email notifications."""
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -38,10 +36,6 @@ class NotificationService:
         except Exception as e:
             logger.error(f"Email send failed to {recipient_list}: {e}")
             return False
-
-    # =========================================================================
-    # STUDENT NOTIFICATIONS
-    # =========================================================================
 
     @classmethod
     def send_exam_invitation(cls, enrollment, invite_link=None):
@@ -224,10 +218,6 @@ Assessment Engine Team
 """
         return cls._send_email(subject, message, [student.email])
 
-    # =========================================================================
-    # EDUCATOR NOTIFICATIONS
-    # =========================================================================
-
     @classmethod
     def send_submission_notification_to_educator(cls, submission):
         """Notify educator when a student submits an exam."""
@@ -343,10 +333,6 @@ Assessment Engine Team
 """
         return cls._send_email(subject, message, [educator.email])
 
-    # =========================================================================
-    # ADMIN NOTIFICATIONS
-    # =========================================================================
-
     @classmethod
     def send_new_user_notification_to_admin(cls, user, role):
         """Notify admins when a new user registers."""
@@ -421,10 +407,6 @@ Best regards,
 Assessment Engine Team
 """
         return cls._send_email(subject, message, admin_emails)
-
-    # =========================================================================
-    # GENERAL NOTIFICATIONS
-    # =========================================================================
 
     @classmethod
     def send_exam_published_notification(cls, exam, students):

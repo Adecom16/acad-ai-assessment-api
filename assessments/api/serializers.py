@@ -345,3 +345,7 @@ class ExamInviteLinkSerializer(serializers.Serializer):
 
 class JoinExamSerializer(serializers.Serializer):
     code = serializers.CharField(max_length=32)
+
+
+class EnrollmentStatusSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=['enrolled', 'pending', 'revoked'])

@@ -1,7 +1,4 @@
-"""
-Certificate Generation Service.
-Generates PDF certificates for passed exams.
-"""
+"""Certificate generation service."""
 import io
 import hashlib
 from datetime import datetime
